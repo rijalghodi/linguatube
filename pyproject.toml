@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "linguatube"
+version = "0.1.0"
+description = ""
+authors = ["Rijal Ghodi <rijalghodi10@gmail.com>"]
+readme = "README.md"
+packages = [
+    { include = "app" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+uvicorn = "^0.23.2"
+langserve = {extras = ["all"], version = "^0.2.2"}
+pydantic = "^2.7.4"
+ipykernel = "^6.29.5"
+python-dotenv = "^1.0.1"
+langchain = "^0.2.14"
+langchain-openai = "^0.1.22"
+langchain-community = "^0.2.12"
+streamlit = "^1.37.1"
+youtube-transcript-api = "^0.6.2"
+pytube = "^15.0.0"
+requests = "^2.32.3"
+requests-oauthlib = "^2.0.0"
+google-auth = "^2.34.0"
+google-auth-oauthlib = "^1.2.1"
+google-auth-httplib2 = "^0.2.0"
+google-api-python-client = "^2.141.0"
+supabase = "^2.7.2"
+
+
+[tool.poetry.group.dev.dependencies]
+langchain-cli = ">=0.0.15"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,2 @@
+from packages.prompts.translation_prompt import translation_prompt
+from packages.prompts.word_info_prompt import word_info_prompt
