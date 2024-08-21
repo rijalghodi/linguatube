@@ -28,6 +28,8 @@ google-auth-oauthlib = "^1.2.1"
 google-auth-httplib2 = "^0.2.0"
 google-api-python-client = "^2.141.0"
 supabase = "^2.7.2"
+langgraph = "^0.2.5"
+langgraph-checkpoint = "^1.0.3"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -2,3 +2,4 @@ from packages.utils.serialize_message import serialize_message, deserialize_mess
 from packages.utils.scrap_youtube_transcript import scrap_youtube_transcript
 from packages.utils.scrap_youtube_metadata import scrap_youtube_metadata
 from packages.utils.preprocess_text import texts_to_docs, split_text
+from .random import random_bigint

@@ -26,6 +26,7 @@ def create_document(video_id: str, client: Client = Depends(get_client)):
         "title": metadata["title"],
         "description": metadata["description"],
         "author": metadata["author"],
+        "youtube_id": metadata["youtube_id"]
     })
     response = insert_document(client, documents)
     return {"ids": response}
