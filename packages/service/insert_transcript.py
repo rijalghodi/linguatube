@@ -1,4 +1,4 @@
-from packages.shared import SupabaseClient, Transcript
+from packages.shared import Transcript
 from supabase import Client
 import uuid
 from typing import Optional

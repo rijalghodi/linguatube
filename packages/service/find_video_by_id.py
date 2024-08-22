@@ -1,11 +1,10 @@
-from packages.shared import SupabaseClient, Video
+from packages.shared import Video
 from supabase import Client
 
 def find_video_by_id(
     client: Client,
     id: str,
 ) -> Video:
-    sc = SupabaseClient()
     response = client \
         .from_("video") \
         .select("*") \

@@ -4,7 +4,7 @@ from supabase import Client
 from typing import Optional
 
 from packages import find_video_by_id, find_transcript_by_video_id
-from packages.shared import SupabaseClient
+from app.core.db_client import get_client
 
 from packages.service import insert_transcript
 
@@ -22,9 +22,6 @@ class TranscriptData(BaseModel):
 
 
 router = APIRouter()
-
-def get_client():
-    return SupabaseClient()
 
 @router.post("/video/{video_id}/transcript/", response_model=TranscriptData)
 def create_transcript(video_id: str, req: CreateTranscriptRequest, client: Client = Depends(get_client) ):

@@ -1,4 +1,4 @@
-from packages.shared import SupabaseClient, Transcript
+from packages.shared import Transcript
 from supabase import Client
 
 def find_transcript_by_video_id(

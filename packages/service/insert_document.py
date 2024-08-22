@@ -4,7 +4,7 @@ from langchain_openai.embeddings import OpenAIEmbeddings
 from langchain_core.documents import Document
 from langchain_community.vectorstores import SupabaseVectorStore
 
-from packages import split_text, texts_to_docs, random_bigint
+from packages import random_bigint
 
 
 def insert_document(

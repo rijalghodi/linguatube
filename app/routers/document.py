@@ -5,16 +5,13 @@ from supabase import Client
 from app.routers.transcript import get_transcript_by_video_id
 from app.routers.video import get_video
 from packages import split_text, texts_to_docs
-from packages.shared import SupabaseClient
+from app.core.db_client import get_client
 
 from packages.service import insert_document
 
 class DocumentData(BaseModel):
     ids: list[str]
 router = APIRouter()
-
-def get_client():
-    return SupabaseClient()
 
 @router.post("/video/{video_id}/document/", response_model=DocumentData)
 def create_document(video_id: str, client: Client = Depends(get_client)):

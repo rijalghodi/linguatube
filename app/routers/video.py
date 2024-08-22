@@ -4,7 +4,7 @@ from supabase import Client
 from typing import Optional
 
 from packages import find_video_by_id
-from packages.shared import SupabaseClient
+from app.core.db_client import get_client
 
 from packages.service import insert_video
 
@@ -24,9 +24,6 @@ class VideoData(BaseModel):
     created_at: str
 
 router = APIRouter()
-
-def get_client():
-    return SupabaseClient()
 
 @router.post("/video/", response_model=VideoData)
 def create_video(req: CreateVideoRequest, client: Client = Depends(get_client) ):

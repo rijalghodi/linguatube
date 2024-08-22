@@ -3,11 +3,12 @@ import json
 from pydantic import BaseModel
 from fastapi import APIRouter, Depends
 from supabase import Client
-from packages.shared import SupabaseClient
+from packages.shared import supabase_client
 
 from app.routers.video import create_video, VideoData
 from app.routers.transcript import create_transcript, TranscriptData
 from packages.utils import scrap_youtube_transcript, scrap_youtube_metadata
+from app.core.db_client import get_client
 
 
 class ScrapYoutubeRequest(BaseModel):
@@ -18,9 +19,6 @@ class ScrapYoutubeData(BaseModel):
     transcript: TranscriptData
 
 router = APIRouter()
-
-def get_client():
-    return SupabaseClient()
 
 @router.post("/scrap-youtube/", response_model=ScrapYoutubeData)
 def scrap_youtube(req: ScrapYoutubeRequest, client: Client = Depends(get_client)):

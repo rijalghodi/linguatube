@@ -20,3 +20,11 @@ class Message(TypedDict):
     video_id: str
     message: Optional[str]
     created_at: str
+
+class ThreadMetadata(TypedDict):
+    id: str
+    video_id: str
+    thread_id: str
+    created_at: str
+    title: Optional[str]
+    mode: Optional[str]

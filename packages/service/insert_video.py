@@ -1,4 +1,4 @@
-from packages.shared import SupabaseClient, Video
+from packages.shared import Video
 from supabase import Client
 import uuid
 from typing import Optional

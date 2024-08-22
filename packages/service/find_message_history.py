@@ -1,4 +1,3 @@
-from packages.shared import SupabaseClient
 from typing import List, Tuple
 from supabase import Client
 
@@ -9,7 +8,6 @@ def find_message_history(
     client: Client,
     video_id: str,
 ) -> List[Tuple[str, str]]:
-    sc = SupabaseClient()
     data = client \
         .from_("message") \
         .select("*") \
