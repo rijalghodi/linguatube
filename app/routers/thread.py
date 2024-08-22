@@ -2,6 +2,7 @@ from langchain_core.messages import SystemMessage
 from langchain_core.vectorstores import VectorStore
 from langgraph.checkpoint.postgres import PostgresSaver
 from langgraph.prebuilt import create_react_agent
+from openai import api_key
 
 from packages.service.insert_thread import insert_thread
 from psycopg_pool import ConnectionPool
@@ -20,6 +21,7 @@ from fastapi.responses import StreamingResponse
 from app.core.vectorstore import get_vectorstore
 from typing import Literal, Optional
 from packages.service.list_thread import list_thread
+from langchain_openai import ChatOpenAI
 from app.core.chat_agent import chat_agent_context
 from fastapi.responses import StreamingResponse
 from typing import Generator
@@ -43,10 +45,12 @@ class ThreadListData(BaseModel):
 class CreateThreadRequest(BaseModel):
     title: Optional[str]
     mode: Optional[Literal["chat", "practice"]] = "chat"
+    api_key: str
 
 class InsertThreadMessageRequest(BaseModel):
     role: str
     content: str
+    api_key: str
 
 class MessageData(BaseModel):
     role: str
@@ -62,7 +66,7 @@ def create_thread(
         request: CreateThreadRequest,
         video_id: str,
         client: Client = Depends(get_client),
-        model: BaseChatModel = Depends(get_chat_model),
+        # model: BaseChatModel = Depends(get_chat_model),
         pool: ConnectionPool = Depends(get_connection_pool),
         vectorstore: SupabaseVectorStore = Depends(get_vectorstore)
 ):
@@ -94,6 +98,8 @@ def create_thread(
     else:
         system_message = ("You are an assistant to help user learn english from youtube.",)
 
+    model = ChatOpenAI(model="gpt-4o-mini", api_key=request.api_key)
+
     with pool.connection() as conn:
         checkpointer = PostgresSaver(conn)
         checkpointer.setup()  # Setup checkpointer if this is the first usage
@@ -115,7 +121,7 @@ def insert_thread_message(
         request: InsertThreadMessageRequest,
         video_id: str,
         thread_id: str,
-        model: BaseChatModel = Depends(get_chat_model),
+        # model: BaseChatModel = Depends(get_chat_model),
         pool: ConnectionPool = Depends(get_connection_pool),
         vectorstore: SupabaseVectorStore = Depends(get_vectorstore)
 ):
@@ -127,6 +133,9 @@ def insert_thread_message(
     )
 
     tools = [retriever_tool]
+
+    model = ChatOpenAI(model="gpt-4o-mini", api_key=request.api_key)
+
 
     with pool.connection() as conn:
         checkpointer = PostgresSaver(conn)
@@ -145,19 +154,25 @@ def insert_thread_message(
     }
 
 
-
 @router.get("/video/{video_id}/thread/")
 def get_all_thread(video_id: str, client: Client = Depends(get_client) ):
     threads = list_thread(client, video_id)
     return threads
 
+
+
+class GetAllMessageRequest(BaseModel):
+    api_key: str
 @router.get("/thread/{thread_id}/message", response_model=MessageListData)
 def get_all_message(
         thread_id: str,
-        model: BaseChatModel = Depends(get_chat_model),
+        api_key: str,
+        # request: GetAllMessageRequest,
+        # model: BaseChatModel = Depends(get_chat_model),
         pool: ConnectionPool = Depends(get_connection_pool),
         vectorstore: SupabaseVectorStore = Depends(get_vectorstore)
 ):
+    print("Hello")
 
     retriever_tool = create_retriever_tool(
         vectorstore.as_retriever(),
@@ -167,15 +182,27 @@ def get_all_message(
 
     tools = [retriever_tool]
 
+    model = ChatOpenAI(model="gpt-4o-mini", api_key=api_key)
+
     with pool.connection() as conn:
         checkpointer = PostgresSaver(conn)
         checkpointer.setup()  # Setup checkpointer if this is the first usage
 
         graph = create_react_agent(model, tools=tools, checkpointer=checkpointer)
         config = {"configurable": {"thread_id": thread_id}}
+        # print(config)
+        # print(graph.get_state(config))
+        # print(graph.get_state(config).values)
+        # print(graph.get_state(config).values['messages'])
+        # state = graph.get_state(config)
         state = graph.get_state(config).values['messages']
+
     messages = [ {"role": v.type, "content": v.content} for v in state ]
     return {
         "data": messages,
         "count": len(messages)
     }
+    # return {
+    #     "data": [],
+    #     "count": 0
+    # }
