@@ -1,9 +1,8 @@
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from langserve import add_routes
-from packages.chains import translation_chain, word_info_chain
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import video, transcript, scrap_youtube, document, item, thread, word
+from app.routers import video, transcript, scrap_youtube, document, thread, word
 app = FastAPI()
 
 allowed_origins = [
@@ -29,7 +28,6 @@ app.include_router(word.router)
 app.include_router(video.router)
 app.include_router(transcript.router)
 app.include_router(scrap_youtube.router)
-app.include_router(item.router)
 app.include_router(document.router)
 app.include_router(thread.router)
 

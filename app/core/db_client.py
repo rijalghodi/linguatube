@@ -1,7 +1,5 @@
 from dotenv import load_dotenv
 import os
-from psycopg_pool import ConnectionPool
-from psycopg.rows import dict_row
 from supabase import create_client, Client
 
 load_dotenv()

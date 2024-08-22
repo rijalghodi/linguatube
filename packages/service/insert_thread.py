@@ -1,11 +1,7 @@
 from packages.shared import Transcript
 from packages.shared.types import ThreadMetadata
 from supabase import Client
-from psycopg_pool import ConnectionPool
-
-import uuid
-from typing import Optional, Literal
-
+from typing import Literal
 
 def insert_thread(
     client: Client,

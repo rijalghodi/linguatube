@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 from supabase import Client
 from typing import Optional
 
-from packages import find_video_by_id, find_transcript_by_video_id
+from packages import find_transcript_by_video_id
 from app.core.db_client import get_client
 
 from packages.service import insert_transcript

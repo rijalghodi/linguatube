@@ -1,5 +1,5 @@
-from langchain.docstore.document import Document
 from youtube_transcript_api import YouTubeTranscriptApi as yta
+from langchain_core.documents import Document
 from typing import List
 
 def scrap_youtube_transcript(youtube_id: str) -> (List[Document], str):

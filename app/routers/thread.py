@@ -1,14 +1,10 @@
-from langchain_core.messages import SystemMessage
-from langchain_core.vectorstores import VectorStore
 from langgraph.checkpoint.postgres import PostgresSaver
 from langgraph.prebuilt import create_react_agent
-from openai import api_key
 
 from packages.service.insert_thread import insert_thread
 from psycopg_pool import ConnectionPool
 from pydantic import BaseModel
 from fastapi import APIRouter, Depends
-from streamlit import title
 from supabase import Client
 from langchain_core.tools import create_retriever_tool
 from app.core.chat_model import get_chat_model
@@ -17,14 +13,10 @@ from langchain_community.vectorstores import SupabaseVectorStore
 import uuid
 from app.core.db_client import get_client
 from langchain_core.language_models import BaseChatModel
-from fastapi.responses import StreamingResponse
 from app.core.vectorstore import get_vectorstore
 from typing import Literal, Optional
 from packages.service.list_thread import list_thread
 from langchain_openai import ChatOpenAI
-from app.core.chat_agent import chat_agent_context
-from fastapi.responses import StreamingResponse
-from typing import Generator
 
 
 

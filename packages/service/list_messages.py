@@ -14,7 +14,7 @@ def list_message(
         .select("*", count='exact')
 
     if graph:
-        query = query.eq("video_id", video_id)
+        query = query.eq("thread_id", thread_id)
 
     response = query.execute()
 

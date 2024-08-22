@@ -3,7 +3,6 @@ import json
 from pydantic import BaseModel
 from fastapi import APIRouter, Depends
 from supabase import Client
-from packages.shared import supabase_client
 
 from app.routers.video import create_video, VideoData
 from app.routers.transcript import create_transcript, TranscriptData

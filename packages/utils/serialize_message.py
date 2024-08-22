@@ -1,5 +1,3 @@
-from mailbox import Message
-
 from langchain_core.messages import BaseMessage
 import json
 from typing import Any, TypedDict
