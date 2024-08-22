@@ -3,6 +3,7 @@ from fastapi.responses import RedirectResponse
 from langserve import add_routes
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import video, transcript, scrap_youtube, document, thread, word
+
 app = FastAPI()
 
 allowed_origins = [
@@ -39,5 +40,11 @@ app.include_router(thread.router)
 
 if __name__ == "__main__":
     import uvicorn
+    import os
+    from dotenv import load_dotenv
+    
+    load_dotenv()
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    PORT = int(os.getenv("PORT") or 8000)
+    
+    uvicorn.run(app, host="0.0.0.0", port=PORT)

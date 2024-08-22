@@ -16,6 +16,6 @@ COPY ./app ./app
 
 RUN poetry install --no-interaction --no-ansi
 
-EXPOSE 8080
+EXPOSE 8000
 
-CMD exec uvicorn app.server:app --host 0.0.0.0 --port 8080
+CMD ["python", "app/server.py"]
