@@ -24,14 +24,24 @@ router = APIRouter()
 def scrap_youtube(req: ScrapYoutubeRequest, client: Client = Depends(get_client)):
     # Create video
     youtube_id = req.youtube_id
-    metadata = scrap_youtube_metadata(youtube_id)
+    # metadata = scrap_youtube_metadata(youtube_id)
+    # new_video_data = {
+    #     "title": metadata["title"],
+    #     "description": metadata["description"],
+    #     "author": metadata["author"],
+    #     "youtube_id": youtube_id,
+    # }
     new_video_data = {
-        "title": metadata["title"],
-        "description": metadata["description"],
-        "author": metadata["author"],
+        "title": "Youtube",
+        "description": "",
+        "author": "",
         "youtube_id": youtube_id,
     }
-    video = create_video(new_video_data, client=client)
+    
+    try:
+        video = create_video(new_video_data, client=client)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
     
     # Create transcript
     try:
