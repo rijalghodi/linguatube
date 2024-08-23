@@ -60,7 +60,7 @@ def get_all_document(  video_id: str, api_key: str, client: Client = Depends(get
     vector_store = get_vectorstore(api_key, client)
     try:
         res = vector_store.similarity_search("Anything", k=4, filter={"video_id": video_id})
-    except:
+    except Exception as e:
         raise HTTPException(status_code=500, detail="An error occurred while getting documents. "+str(e))
 
     return {"count": len(res)}

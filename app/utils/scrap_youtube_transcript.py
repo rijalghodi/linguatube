@@ -5,7 +5,7 @@ from langchain_core.documents import Document
 from youtube_transcript_api import YouTubeTranscriptApi as yta
 
 
-def scrap_youtube_transcript(youtube_id: str) -> (List[Document], str):
+def scrap_youtube_transcript(youtube_id: str) -> tuple[List[Document], str]:
     try:
         transcript = yta.get_transcript(youtube_id)
     except Exception as e:
