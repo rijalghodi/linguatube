@@ -35,7 +35,7 @@ async def insert_message(
     with pool.connection() as conn:
         checkpointer = PostgresSaver(conn)
         checkpointer.setup()
-        prompt = "Make your reply concise way in less than 250 word. Encourage user to more speak."
+        prompt = "Make your reply concise way in less than 50 word. Encourage user to more speak."
 
         graph = create_react_agent(model, tools=tools, checkpointer=checkpointer, state_modifier=prompt)
         config = {"configurable": {"thread_id": thread_id}}

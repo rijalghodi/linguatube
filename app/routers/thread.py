@@ -13,7 +13,7 @@ from app.core.connection_pool import get_connection_pool
 from app.core.db_client import get_client
 from app.core.vectorstore import get_vectorstore
 from app.models import CreateThreadRequest, ThreadListData, ThreadMetaData
-from app.service import list_thread
+from app.service import find_video_by_id, list_thread
 from app.service.insert_thread import insert_thread
 
 router = APIRouter()
@@ -25,10 +25,15 @@ async def create_thread(
         client: Client = Depends(get_client),
         pool: ConnectionPool = Depends(get_connection_pool)
 ):
+    try:
+        video = find_video_by_id(client, video_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="An error occurred while fetching video." + str(e))
+    
     vectorstore = get_vectorstore(request.api_key, client)
     
     retriever_tool = create_retriever_tool(
-        vectorstore.as_retriever(search_type="similarity", filter={"video_id": video_id}),
+        vectorstore.as_retriever(search_type="similarity", k=5, filter={"video_id": video_id}),
         name="retrieve_document",
         description="Search and return information from youtube content that may user ask.",
     )
@@ -37,15 +42,18 @@ async def create_thread(
     thread_id = str(uuid.uuid4())
 
     system_message = {
-        "chat": "You are an assistant designed to help users learn English from YouTube videos. \
-            The video content has been extracted and is available through tools for you to access. \
-            Use these tools to retrieve information or summarize the video content. \
-            Keep your responses concise, engaging, and ensure the user remains active in the conversation.",
-        "practice": "You are an assistant designed to help users learn English using YouTube videos. \
-            The content from these videos has been extracted and is available through tools. \
+        "chat": f"You are an assistant designed to help users learn English from YouTube videos. \
+            The youtube transcript has been extracted and is available through tools. \
+            Keep your responses concise (maximum 50 words), engaging, and ensure the user remains active in the conversation. \
+            The tile of video is {video['title']} \
+            First, use your tools to summarize the youtube transcript in 2 - 5 sentence then ask what user want to know. ",
+        "practice": f"You are an assistant designed to help users learn English using YouTube videos. \
+            The youtube transcript has been extracted and is available through tools. \
             User chats will be recorded and assessed to monitor their English skills. \
-            Keep your responses concise, ask questions related to the video, and challenge the user’s understanding \
-            by inquiring about specific details from the video."
+            Keep your responses concise (maximum 50 words) and challenge the user’s understanding \
+            by inquiring about specific details from the video.\
+            The tile of video is {video['title']} \
+            First, use your tools to summarize the youtube transcript in 2 - 5 sentence then ask what user want to know. ",
     }.get(request.mode, ("You are an assistant to help user learn english from youtube.",))
 
     model = get_chat_model(request.api_key)
@@ -58,8 +66,10 @@ async def create_thread(
         config = {"configurable": {"thread_id": thread_id}}
     
         try:
+            
             graph.invoke(
                 input={"messages": [SystemMessage(content=str(system_message))]}, config=config)
+        
         except Exception as e:
             raise HTTPException(status_code=500, detail="Problem in creating thread. " + str(e))
     
