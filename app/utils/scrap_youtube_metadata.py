@@ -1,6 +1,8 @@
 from typing import TypedDict
 
-from pytube import YouTube
+import pytube
+
+pytube.innertube._default_clients['ANDROID']=pytube.innertube._default_clients['WEB']
 
 
 class YoutubeMetadata(TypedDict):
@@ -9,7 +11,7 @@ class YoutubeMetadata(TypedDict):
     description: str
 
 def scrap_youtube_metadata(youtube_id: str) -> YoutubeMetadata:
-    yt = YouTube(f"https://www.youtube.com/watch?v={youtube_id}")
+    yt = pytube.YouTube(f"https://www.youtube.com/watch?v={youtube_id}")
     return {
         "title": yt.title,
         "author": yt.author,
