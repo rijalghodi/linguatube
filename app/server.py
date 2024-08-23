@@ -1,10 +1,16 @@
+import logging
+
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from langserve import add_routes
-from fastapi.middleware.cors import CORSMiddleware
-from app.routers import video, transcript, scrap_youtube, document, thread, word
+
+from app.routers import (document, message, scrap_youtube, thread, transcript,
+                         video, word)
 
 app = FastAPI()
+
+logger = logging.getLogger(__name__)
 
 allowed_origins = [
     "http://localhost:3000",
@@ -22,6 +28,7 @@ app.add_middleware(
 )
 @app.get("/")
 async def redirect_root_to_docs():
+    logger.info("Root endpoint accessed")
     return RedirectResponse("/docs")
 
 @app.get("/hello")
@@ -33,14 +40,16 @@ app.include_router(transcript.router)
 app.include_router(scrap_youtube.router)
 app.include_router(document.router)
 app.include_router(thread.router)
+app.include_router(message.router)
 
 # Edit this to add the chain you want to add
 # add_routes(app, word_info_chain, path="/word-info")
 # add_routes(app, translation_chain, path="/translate")
 
 if __name__ == "__main__":
-    import uvicorn
     import os
+
+    import uvicorn
     from dotenv import load_dotenv
     
     load_dotenv()

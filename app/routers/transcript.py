@@ -1,35 +1,25 @@
-from pydantic import BaseModel
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from supabase import Client
-from typing import Optional
 
-from packages import find_transcript_by_video_id
 from app.core.db_client import get_client
-
-from packages.service import insert_transcript
-
-
-class CreateTranscriptRequest(BaseModel):
-    transcript_list: str
-    plain_transcript: Optional[str]
-
-class TranscriptData(BaseModel):
-    id: str
-    video_id: str
-    transcript: str
-    plain_transcript: Optional[str]
-    created_at: str
-
+from app.models import CreateTranscriptRequest, TranscriptData
+from app.service import find_transcript_by_video_id, insert_transcript
 
 router = APIRouter()
 
 @router.post("/video/{video_id}/transcript/", response_model=TranscriptData)
-def create_transcript(video_id: str, req: CreateTranscriptRequest, client: Client = Depends(get_client) ):
-    transcript = insert_transcript(client, req["transcript_list"], video_id, plain_transcript=req["plain_transcript"])
+def create_transcript(video_id: str, req: CreateTranscriptRequest, client: Client = Depends(get_client)):
+    try:
+        transcript = insert_transcript(client, req["transcript_list"], video_id, plain_transcript=req["plain_transcript"])
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="An error occurred while creating transcript." + str(e))
     return transcript
 
 @router.get("/video/{video_id}/transcript/", response_model=TranscriptData)
 def get_transcript_by_video_id(video_id: str, client: Client = Depends(get_client) ):
-    transcript = find_transcript_by_video_id(client, video_id)
+    try:
+        transcript = find_transcript_by_video_id(client, video_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="An error occurred while fetching transcript." + str(e))
     return transcript
 
