@@ -21,25 +21,20 @@ class ScrapYoutubeData(BaseModel):
 router = APIRouter()
 
 @router.post("/scrap-youtube/", response_model=ScrapYoutubeData)
-def scrap_youtube(req: ScrapYoutubeRequest, client: Client = Depends(get_client)):
+async def scrap_youtube(req: ScrapYoutubeRequest, client: Client = Depends(get_client)):
     # Create video
     youtube_id = req.youtube_id
-    # metadata = scrap_youtube_metadata(youtube_id)
-    # new_video_data = {
-    #     "title": metadata["title"],
-    #     "description": metadata["description"],
-    #     "author": metadata["author"],
-    #     "youtube_id": youtube_id,
-    # }
+    metadata = scrap_youtube_metadata(youtube_id)
     new_video_data = {
-        "title": "Youtube",
-        "description": "",
-        "author": "",
+        "title": metadata["title"],
+        "description": metadata["description"],
+        "author": metadata["author"],
         "youtube_id": youtube_id,
+        "thumbnail_url": metadata["thumbnail_url"],
     }
     
     try:
-        video = create_video(new_video_data, client=client)
+        video = await create_video(new_video_data, client=client)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
@@ -59,7 +54,7 @@ def scrap_youtube(req: ScrapYoutubeRequest, client: Client = Depends(get_client)
     }
     
     try:
-        transcript = create_transcript(video['id'], new_transcript_data, client=client)
+        transcript = await create_transcript(video['id'], new_transcript_data, client=client)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     

@@ -1,13 +1,13 @@
-from supabase import Client
+from supabase import AClient, Client
 
 from app.models import Video
 
 
 def find_video_by_id(
     client: Client,
-    id: str,
+    id: str,    
 ) -> Video:
-    response = client \
+    response =  client \
         .from_("video") \
         .select("*") \
         .eq("id", id) \

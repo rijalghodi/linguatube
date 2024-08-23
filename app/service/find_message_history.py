@@ -1,6 +1,6 @@
 from typing import List, Tuple
 
-from supabase import Client
+from supabase import AClient, Client
 
 from app.utils.serialize_message import deserialize_message_from_str
 

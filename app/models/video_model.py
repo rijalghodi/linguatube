@@ -24,3 +24,8 @@ class VideoData(BaseModel):
     author: Optional[str]
     youtube_id: str
     created_at: str
+    
+    
+class ListVideoData(BaseModel):
+    data: list[VideoData]
+    count: Optional[int]

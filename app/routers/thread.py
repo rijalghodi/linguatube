@@ -19,18 +19,18 @@ from app.service.insert_thread import insert_thread
 router = APIRouter()
 
 @router.post("/video/{video_id}/thread/", response_model=ThreadMetaData)
-def create_thread(
+async def create_thread(
         request: CreateThreadRequest,
         video_id: str,
         client: Client = Depends(get_client),
         pool: ConnectionPool = Depends(get_connection_pool)
 ):
-    vectorstore = get_vectorstore(request.api_key)
+    vectorstore = get_vectorstore(request.api_key, client)
     
     retriever_tool = create_retriever_tool(
         vectorstore.as_retriever(search_type="similarity", filter={"video_id": video_id}),
         name="retrieve_document",
-        description="Search and return information from content that may user ask.",
+        description="Search and return information from youtube content that may user ask.",
     )
 
     tools = [retriever_tool]
@@ -71,7 +71,7 @@ def create_thread(
     return new_thread
 
 @router.get("/video/{video_id}/thread/", response_model=ThreadListData)
-def get_all_thread(video_id: str, client: Client = Depends(get_client)):
+async def get_all_thread(video_id: str, client: Client = Depends(get_client)):
     try:
         threads = list_thread(client, video_id)
     except Exception as e:

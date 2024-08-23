@@ -7,7 +7,7 @@ def list_thread(
     client: Client,
     video_id: str = None,
 ) -> Thread:
-    query = client \
+    query =  client \
         .table("checkpoint_metadata") \
         .select("*", count='exact')
 

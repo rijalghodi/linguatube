@@ -8,7 +8,7 @@ from app.service import find_transcript_by_video_id, insert_transcript
 router = APIRouter()
 
 @router.post("/video/{video_id}/transcript/", response_model=TranscriptData)
-def create_transcript(video_id: str, req: CreateTranscriptRequest, client: Client = Depends(get_client)):
+async def create_transcript(video_id: str, req: CreateTranscriptRequest, client: Client = Depends(get_client)) -> TranscriptData:
     try:
         transcript = insert_transcript(client, req["transcript_list"], video_id, plain_transcript=req["plain_transcript"])
     except Exception as e:
@@ -16,7 +16,7 @@ def create_transcript(video_id: str, req: CreateTranscriptRequest, client: Clien
     return transcript
 
 @router.get("/video/{video_id}/transcript/", response_model=TranscriptData)
-def get_transcript_by_video_id(video_id: str, client: Client = Depends(get_client) ):
+async def get_transcript_by_video_id(video_id: str, client: Client = Depends(get_client)) -> TranscriptData:
     try:
         transcript = find_transcript_by_video_id(client, video_id)
     except Exception as e:

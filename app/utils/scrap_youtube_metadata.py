@@ -9,6 +9,7 @@ class YoutubeMetadata(TypedDict):
     title: str
     author: str
     description: str
+    thumbnail_url: str
 
 def scrap_youtube_metadata(youtube_id: str) -> YoutubeMetadata:
     yt = pytube.YouTube(f"https://www.youtube.com/watch?v={youtube_id}")
@@ -16,6 +17,7 @@ def scrap_youtube_metadata(youtube_id: str) -> YoutubeMetadata:
         "title": yt.title,
         "author": yt.author,
         "description": yt.description,
+        "thumbnail_url": yt.thumbnail_url
     }
 
 if __name__ == "__main__":

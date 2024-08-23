@@ -7,19 +7,21 @@ from supabase import Client
 
 from app.core.chat_model import get_chat_model
 from app.core.connection_pool import get_connection_pool
+from app.core.db_client import get_client
 from app.core.vectorstore import get_vectorstore
 from app.models import InsertMessageRequest, MessageListData
 
 router = APIRouter()
 
 @router.post("/video/{video_id}/thread/{thread_id}/")
-def insert_message(  
+async def insert_message(  
         request: InsertMessageRequest,
         video_id: str,
         thread_id: str,
         pool: ConnectionPool = Depends(get_connection_pool),
+        client: Client = Depends(get_client),
 ):
-    vectorstore = get_vectorstore(request.api_key)
+    vectorstore = get_vectorstore(request.api_key, client)
 
     retriever_tool = create_retriever_tool(
         vectorstore.as_retriever(search_type="similarity", filter={"video_id": video_id}),
@@ -50,17 +52,18 @@ def insert_message(
     }
 
 @router.get("/thread/{thread_id}/message", response_model=MessageListData)
-def get_all_message(
+async def get_all_message(
         thread_id: str,
         api_key: str,
         pool: ConnectionPool = Depends(get_connection_pool),
+        client: Client = Depends(get_client),
 ):
-    vectorstore = get_vectorstore(api_key)
+    vectorstore = get_vectorstore(api_key, client)
     
     retriever_tool = create_retriever_tool(
         vectorstore.as_retriever(),
         name="retrieve_document",
-        description="Search and return information from content that may user ask.",
+        description="Search and return information from youtube content that may user ask.",
     )
 
     tools = [retriever_tool]
