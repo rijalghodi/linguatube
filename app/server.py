@@ -54,6 +54,6 @@ if __name__ == "__main__":
     
     load_dotenv()
 
-    PORT = int(os.getenv("PORT") or 8000)
+    PORT = int(os.getenv("PORT") or 10000)
     
     uvicorn.run(app, host="0.0.0.0", port=PORT)

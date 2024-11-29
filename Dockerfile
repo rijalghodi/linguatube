@@ -16,6 +16,6 @@ COPY ./app ./app
 
 RUN poetry install --no-interaction --no-ansi
 
-EXPOSE 8000
+EXPOSE 10000
 
 CMD ["python", "app/server.py"]
